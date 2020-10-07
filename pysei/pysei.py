@@ -193,14 +193,16 @@ class SEI():
         # 2 - Captura o hndCaptcha'
         r = self.session.get(url_login_php)
         soup = BeautifulSoup(r.text, 'lxml')
-        hdn_captcha = soup.find('input', {'id': 'hdnCaptcha'})['value']
+        hdn_token = soup.find('input', {'id': re.compile("hdnToken")})
 
         #3 - Envia o form de Login'
-        data = {"txtUsuario": self.nu_cpf,
-                "pwdSenha": self.password,
-                "selOrgao": "0",
-                "sbmLogin": "Acessar",
-                "hdnCaptcha": hdn_captcha}
+        data = {
+            'txtUsuario': self.nu_cpf,
+            'pwdSenha': self.password,
+            'selOrgao': '0',
+            'sbmLogin': 'Acessar',
+            hdn_token['name']: hdn_token['value']
+        }
 
         r = self.session.post(url_login_php, data=data, verify=False)
 
