@@ -1,13 +1,14 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
+- 3.8.5
 install:
-  - pip install -r requirements.txt
-  - pip install codecov
-script: python setup.py test
+- pip install -r requirements-dev.txt
+- pip install codecov
+script:
+- flake8
+- python setup.py test
 branches:
   only:
-    - master
+  - master
 after_success:
-  - codecov
+- codecov

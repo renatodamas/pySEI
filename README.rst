@@ -4,8 +4,8 @@
 pySEI
 =====
 
-.. image:: https://img.shields.io/travis/rafpyprog/pySEI.svg
-   :target: https://travis-ci.org/rafpyprog/pySEI
+.. image:: https://travis-ci.org/renatodamas/pySEI.svg?branch=master
+    :target: https://travis-ci.org/renatodamas/pySEI
 
 .. image:: https://img.shields.io/codecov/c/github/rafpyprog/pysei.svg
    :target: https://codecov.io/gh/rafpyprog/pysei
