@@ -1,0 +1,6 @@
+flake8
+mccabe
+pycodestyle
+pyflakes
+pytest
+-r requirements.txt
