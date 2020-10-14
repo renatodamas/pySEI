@@ -3,7 +3,7 @@ python:
 - 3.9.0
 install:
 - pip install -q pipenv codecov
-- pipenvsync --dev
+- pipenv sync --dev
 script:
 - flake8
 - python setup.py test
