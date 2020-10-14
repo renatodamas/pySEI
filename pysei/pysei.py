@@ -237,15 +237,15 @@ class SEI():
         return self._form_url
 
     def get_form_URL(self):
-        HTML = self.acessa_tela_pesquisa()
-        soup = BeautifulSoup(HTML, 'lxml')
+        html = self.acessa_tela_pesquisa()
+        soup = BeautifulSoup(html, 'lxml')
         url_pesquisa = soup.find('form', {'id': 'frmPesquisaProtocolo'})['action']
         return URL_SEI + url_pesquisa
 
     def pesquisa(self, query='', numero_sei='', pesquisar_documentos=True, doc_gerados=True, doc_externos=True,
-                 com_tramitacao=False, id_orgao_gerador='', id_unidade_geradora='', id_assunto='', id_usuario_assinatura='',
-                 id_contato='', interessado=True, remetente=True, destinatario=True, descricao='',
-                 observacao_unidade='', id_tipo_processo='', id_tipo_documento='', numero_nome_arvore='',
+                 com_tramitacao=False, id_orgao_gerador='', id_unidade_geradora='', id_assunto='',
+                 id_usuario_assinatura='', id_contato='', interessado=True, remetente=True, destinatario=True,
+                 descricao='', observacao_unidade='', id_tipo_processo='', id_tipo_documento='', numero_nome_arvore='',
                  data_inicial='', data_final='', usuario_gerador1='', usuario_gerador2='', usuario_gerador3=''):
 
         data = {
