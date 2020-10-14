@@ -1,61 +1,60 @@
-from concurrent.futures import Future, wait
 import os
-import time
+import pytest
 
 from pysei import SEI, ResultadoPesquisa, ProcessoSei
 
-nu_cpf = os.environ['CPF']
-pwd_sei = os.environ['PASSWORD_SEI']
+SEI_USERNAME = os.environ['SEI_USERNAME']
+SEI_PASSWORD = os.environ['SEI_PASSWORD']
+SEI_URL = os.environ['SEI_URL']
+SEI_UNIDADE = os.environ['SEI_UNIDADE']
+SEI_PROCESSO_TESTE = os.environ['SEI_PROCESSO_TESTE']
 
 
-def test_login_sei():
-    sei = SEI()
-    login_status = sei.login(nu_cpf, pwd_sei)
-    assert login_status == True
+@pytest.fixture(scope='function')
+def sei():
+    return SEI(SEI_URL)
 
 
-def test_login_dados_invalidos_sei():
-    sei = SEI()
-    login_status = sei.login('00000000000', pwd_sei)
-    assert login_status == False
+def test_login_sei(sei):
+    login_status = sei.login(SEI_USERNAME, SEI_PASSWORD)
+    assert login_status
 
 
-def test_acessa_tela_pesquisa():
-    sei = SEI()
-    login_status = sei.login(nu_cpf, pwd_sei)
+def test_login_dados_invalidos_sei(sei):
+    login_status = sei.login('00000000000',  SEI_PASSWORD)
+    assert not login_status
+
+
+def test_acessa_tela_pesquisa(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD)
     html = sei.acessa_tela_pesquisa()
     assert 'Pesquisar em' in html
 
 
-def test_pesquisa():
-    sei = SEI()
-    login_status = sei.login(nu_cpf, pwd_sei)
+def test_pesquisa(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD)
     query = 'Rafael'
     pesquisa = sei.pesquisa(query)
-    assert query in pesquisa.HTML
+    assert query in pesquisa.html
 
 
-def test_retorna_resultado_pesquisa():
-    sei = SEI()
-    sei.login(nu_cpf, pwd_sei)
-    p = sei.pesquisa(nu_sei='000000000015500')
+def test_retorna_resultado_pesquisa(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD, id_unidade=SEI_UNIDADE)
+    p = sei.pesquisa(numero_sei='000000000015500')
     assert isinstance(p, ResultadoPesquisa)
 
 
-def test_retorna_processo_sei():
-    sei = SEI()
-    sei.login(nu_cpf, pwd_sei)
-    p = sei.pesquisa(nu_sei='103800001719932')
+def test_retorna_processo_sei(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD, id_unidade=SEI_UNIDADE)
+    p = sei.pesquisa(numero_sei=SEI_PROCESSO_TESTE, pesquisar_documentos=False)
     assert isinstance(p, ProcessoSei)
 
 
-def test_get_form_url():
-    sei = SEI()
-    sei.login(nu_cpf, pwd_sei)
+def test_get_form_url(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD)
     assert sei.form_URL.startswith('https://')
 
 
-def test_form_url():
-    sei = SEI()
-    sei.login(nu_cpf, pwd_sei)
+def test_form_url(sei):
+    sei.login(SEI_USERNAME, SEI_PASSWORD)
     assert sei.form_URL is not None
