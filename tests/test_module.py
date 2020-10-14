@@ -21,7 +21,7 @@ def test_login_sei(sei):
 
 
 def test_login_dados_invalidos_sei(sei):
-    login_status = sei.login('00000000000',  SEI_PASSWORD)
+    login_status = sei.login('00000000000', SEI_PASSWORD)
     assert not login_status
 
 

@@ -9,6 +9,10 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 URL_SEI = ''  # Especificada em SEI.__init__
 
 
+class ErroLogin(Exception):
+    pass
+
+
 class ProcessoSei:
     def __init__(self, session, html):
         self.session = session
@@ -73,7 +77,7 @@ class ProcessoSei:
         if self._documentos == {}:
             html = self.arvore
 
-            pattern_urls = ('(?<=Nos\[[0-999]\].src\s=\s\').*(?=\';)')
+            pattern_urls = '(?<=Nos\[[0-999]\].src\s=\s\').*(?=\';)'
             urls_arvore = re.findall(pattern_urls, html)[1:]
 
             pattern = '(?<=Nos\[[0-999]\] = new infraArvoreNo\().*(?=\))'
@@ -110,7 +114,7 @@ class ProcessoSei:
         r = self.session.post(url_gera_pdf, verify=False, data=params, timeout=60)
         url_pdf = re.search('(?<=window.open\(\').*(?=\'\))', r.text).group()
         r = self.session.get(URL_SEI + url_pdf, verify=False, timeout=120)
-        DOWNLOAD_CONTENT = r.content
+        download_content = r.content
 
         if r.headers.get('Content-Disposition', None) is not None:
             filename = r.headers.get('Content-Disposition').split('"')[-2]
@@ -119,16 +123,16 @@ class ProcessoSei:
             filename = os.path.join(path, filename)
 
         with open(filename, 'wb') as f:
-            f.write(DOWNLOAD_CONTENT)
+            f.write(download_content)
 
 
-class ResultadoPesquisa():
-    def __init__(self, session, HTML):
+class ResultadoPesquisa:
+    def __init__(self, session, html):
         self.session = session
-        self.html = HTML
+        self.html = html
 
 
-class Documento():
+class Documento:
     def __init__(self, session, attributes: str):
         self.session = session
         self.attributes = attributes
@@ -138,7 +142,7 @@ class Documento():
         attrs = attributes.replace('",', '|').replace('"', '').split('|')
         self.url = URL_SEI + attrs[-1]
         self.name = attrs[5]
-        number_pattern = '(?<=\s)[0-9]*$|(?<=\()[0-9]{1,8}(?!\))'
+        # number_pattern = '(?<=\s)[0-9]*$|(?<=\()[0-9]{1,8}(?!\))'
         self.number = attrs[5].split(' ')[-1].replace('(', '').replace(')', '')
 
     @property
@@ -212,7 +216,8 @@ class SEI():
         try:
             soup = BeautifulSoup(r.content, 'lxml')
             self.user = soup.find('a', {'id': 'lnkUsuarioSistema'})['title']
-        except:
+
+        except Exception:
             print('Erro no login')
             return False
 
@@ -222,6 +227,7 @@ class SEI():
     @property
     def is_online(self):
         r = requests.get(URL_SEI, verify=False, allow_redirects=False)
+        return r.status_code in [200, 302]
 
     def acessa_tela_pesquisa(self):
         soup = BeautifulSoup(self.html, 'lxml')
