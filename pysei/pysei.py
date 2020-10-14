@@ -6,15 +6,13 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-
-URL_SEI = 'https://seimp.planejamento.gov.br/sei/'
-
+URL_SEI = ''  # Especificada em SEI.__init__
 
 
-class ProcessoSei():
-    def __init__(self, session, HTML):
+class ProcessoSei:
+    def __init__(self, session, html):
         self.session = session
-        self.HTML = HTML
+        self.html = html
         self._arvore = None
         self._acoes = None
         self._documentos = {}
@@ -23,28 +21,28 @@ class ProcessoSei():
     def metadata(self):
         metadata = {}
         url = [i for i in self.acoes if 'consultar' in i][0]
-        HTML = self.session.get(url, verify=False, timeout=60).text
-        data_HTML = BeautifulSoup(HTML, 'lxml')
+        html = self.session.get(url, verify=False, timeout=60).text
+        data_html = BeautifulSoup(html, 'lxml')
 
-        sel_assuntos = data_HTML.find('select', {'id': 'selAssuntos'})
+        sel_assuntos = data_html.find('select', {'id': 'selAssuntos'})
         assuntos = [i.text for i in sel_assuntos.find_all('option')]
         metadata['assuntos'] = assuntos
 
-        sel_interessado = data_HTML.find('select', {'id': 'selInteressadosProcedimento'})
+        sel_interessado = data_html.find('select', {'id': 'selInteressadosProcedimento'})
         interessados = [i.text for i in sel_interessado.find_all('option')]
         metadata['interessados'] = interessados
 
-        especificacao = data_HTML.find('input', {'id': 'txtDescricao'})['value']
+        especificacao = data_html.find('input', {'id': 'txtDescricao'})['value']
         metadata['especificacao'] = especificacao
 
-        select_tipo = data_HTML.find('select', {'id': 'selTipoProcedimento'})
+        select_tipo = data_html.find('select', {'id': 'selTipoProcedimento'})
         tipo = select_tipo.find('option', {'selected': 'selected'}).text
         metadata['tipo'] = tipo
 
-        protocolo = data_HTML.find('input', {'id': 'txtProtocoloExibir'})['value']
+        protocolo = data_html.find('input', {'id': 'txtProtocoloExibir'})['value']
         metadata['protocolo'] = protocolo
 
-        dt_autuacao = data_HTML.find('input', {'id': 'txtDtaGeracaoExibir'})['value']
+        dt_autuacao = data_html.find('input', {'id': 'txtDtaGeracaoExibir'})['value']
         metadata['data_autuacao'] = dt_autuacao
 
         metadata['documentos'] = self.documentos
@@ -53,7 +51,7 @@ class ProcessoSei():
     @property
     def arvore(self):
         if self._arvore is None:
-            soup = BeautifulSoup(self.HTML, 'lxml')
+            soup = BeautifulSoup(self.html, 'lxml')
             body = soup.html.find('body', recursive=False)
             src = body.find('iframe', {'id': 'ifrArvore'})['src']
             url = URL_SEI + src
@@ -64,8 +62,8 @@ class ProcessoSei():
     @property
     def acoes(self):
         if self._acoes is None:
-            HTML = self.arvore
-            acoes = re.search('(?<=Nos\[0\].acoes = \').*', HTML).group()
+            html = self.arvore
+            acoes = re.search('(?<=Nos\[0\].acoes = \').*', html).group()
             self._acoes = [URL_SEI + i for
                            i in re.findall('(?<=href=").*?(?="\stabindex)', acoes)]
         return self._acoes
@@ -73,13 +71,13 @@ class ProcessoSei():
     @property
     def documentos(self):
         if self._documentos == {}:
-            HTML = self.arvore
+            html = self.arvore
 
             pattern_urls = ('(?<=Nos\[[0-999]\].src\s=\s\').*(?=\';)')
-            urls_arvore = re.findall(pattern_urls, HTML)[1:]
+            urls_arvore = re.findall(pattern_urls, html)[1:]
 
             pattern = '(?<=Nos\[[0-999]\] = new infraArvoreNo\().*(?=\))'
-            nos_arvore = re.findall(pattern, HTML)[1:]
+            nos_arvore = re.findall(pattern, html)[1:]
 
             for i in ['",'.join(i) for i in zip(nos_arvore, urls_arvore)]:
                 doc = Documento(self.session, i)
@@ -127,7 +125,7 @@ class ProcessoSei():
 class ResultadoPesquisa():
     def __init__(self, session, HTML):
         self.session = session
-        self.HTML = HTML
+        self.html = HTML
 
 
 class Documento():
@@ -165,7 +163,6 @@ class Documento():
         with open(outfile, 'wb') as f:
             f.write(self.contents)
 
-
     def __str__(self):
         return self.name
 
@@ -174,32 +171,38 @@ class Documento():
 
 
 class SEI():
-    url = URL_SEI
-    def __init__(self):
+
+    def __init__(self, url_sei):
+        """
+        :param url_sei: Endereço da página inicial do SEI do tipo 'https://seimp.planejamento.gov.br/sei/'
+        """
+        global URL_SEI
+        URL_SEI = url_sei
         self.session = requests.Session()
         self._form_url = None
 
-    def login(self, nu_cpf, password):
-        self.nu_cpf = nu_cpf
+    def login(self, username, password, id_orgao=0, id_unidade=0):
+        self.username = username
         self.password = password
 
         if self.is_online is False:
             raise SystemError('SEI offline.')
 
         # 1 - Página inicial
-        r = self.session.get(self.url, verify=False, allow_redirects=False)
-        url_login_php = r.headers['Location']
+        r = self.session.get(URL_SEI, verify=False, allow_redirects=True)
+        url_login_php = r.url
 
-        # 2 - Captura o hndCaptcha'
-        r = self.session.get(url_login_php)
+        # 2 - Captura o hndToken'
+        # r = self.session.get(url_login_php)
         soup = BeautifulSoup(r.text, 'lxml')
-        hdn_token = soup.find('input', {'id': re.compile("hdnToken")})
+        hdn_token = soup.find('input', {'id': re.compile('hdnToken')})
 
-        #3 - Envia o form de Login'
+        # 3 - Envia o form de Login'
         data = {
-            'txtUsuario': self.nu_cpf,
+            'txtUsuario': self.username,
             'pwdSenha': self.password,
-            'selOrgao': '0',
+            'selOrgao': id_orgao,
+            'selInfraUnidades': id_unidade,  # quando o usuário está habilitado para mais de uma unidade
             'sbmLogin': 'Acessar',
             hdn_token['name']: hdn_token['value']
         }
@@ -218,12 +221,12 @@ class SEI():
 
     @property
     def is_online(self):
-        r = requests.get(self.url, verify=False, allow_redirects=False)
+        r = requests.get(URL_SEI, verify=False, allow_redirects=False)
 
     def acessa_tela_pesquisa(self):
         soup = BeautifulSoup(self.html, 'lxml')
-        menu = soup.find('ul', {'id': 'main-menu'}).find_all('a')[3]
-        url_pesquisa = self.url + menu['href']
+        menu = soup.find('ul', {'id': 'main-menu'}).find_all('a', text='Pesquisa')[0]
+        url_pesquisa = URL_SEI + menu['href']
         r = self.session.get(url_pesquisa, verify=False)
         return r.text
 
@@ -237,53 +240,61 @@ class SEI():
         HTML = self.acessa_tela_pesquisa()
         soup = BeautifulSoup(HTML, 'lxml')
         url_pesquisa = soup.find('form', {'id': 'frmPesquisaProtocolo'})['action']
-        return self.url + url_pesquisa
+        return URL_SEI + url_pesquisa
 
-    def pesquisa(self, query='', nu_sei='', doc_gerados=True,
-                 doc_recebidos=True, com_tramitacao=False):
+    def pesquisa(self, query='', numero_sei='', pesquisar_documentos=True, doc_gerados=True, doc_externos=True,
+                 com_tramitacao=False, id_orgao_gerador='', id_unidade_geradora='', id_assunto='', id_usuario_assinatura='',
+                 id_contato='', interessado=True, remetente=True, destinatario=True, descricao='',
+                 observacao_unidade='', id_tipo_processo='', id_tipo_documento='', numero_nome_arvore='',
+                 data_inicial='', data_final='', usuario_gerador1='', usuario_gerador2='', usuario_gerador3=''):
+
         data = {
+            'hdnInfraTipoPagina': '0',
+            'sbmPesquisar': 'Pesquisar',
+            'rdoPesquisarEm': 'D' if pesquisar_documentos else 'P',
+            'chkSinDocumentosGerados': 'S' if doc_gerados else '',
+            'chkSinDocumentosRecebidos': 'S' if doc_externos else '',
+            'chkSinProcessosTramitacao': 'S' if com_tramitacao else '',
             'q': query,
-            'sbmPesquisar':'Pesquisar',
             'txtUnidade': '',
-            'hdnIdUnidade': '',
+            'hdnIdUnidade': id_unidade_geradora,
             'txtAssunto': '',
-            'hdnIdAssunto': '',
+            'hdnIdAssunto': id_assunto,
             'txtAssinante': '',
-            'hdnIdAssinante': '',
+            'hdnIdAssinante': id_usuario_assinatura,
             'txtContato': '',
-            'hdnIdContato': '',
-            'chkSinInteressado': 'S',
-            'chkSinRemetente': 'S',
-            'chkSinDestinatario': 'S',
-            'txtDescricaoPesquisa': '',
-            'txtObservacaoPesquisa': '',
-            'txtProtocoloPesquisa': nu_sei,
-            'selTipoProcedimentoPesquisa': '',
-            'selSeriePesquisa': '',
-            'txtNumeroDocumentoPesquisa': '',
-            'txtDataInicio': '',
-            'txtDataFim': '',
-            'txtUsuarioGerador1': '',
+            'hdnIdContato': id_contato,
+            'chkSinInteressado': 'S' if interessado else '',
+            'chkSinRemetente': 'S' if remetente else '',
+            'chkSinDestinatario': 'S' if destinatario else '',
+            'txtDescricaoPesquisa': descricao,
+            'txtObservacaoPesquisa': observacao_unidade,
+            'txtProtocoloPesquisa': numero_sei,
+            'selTipoProcedimentoPesquisa': id_tipo_processo,
+            'selSeriePesquisa': id_tipo_documento,
+            'txtNumeroDocumentoPesquisa': numero_nome_arvore,
+            'rdoData': '0',  # '30' últimos trintas dias, '60' últimos sessenta dias
+            'txtDataInicio': data_inicial,
+            'txtDataFim': data_final,
+            'txtUsuarioGerador1': usuario_gerador1,
             'hdnIdUsuarioGerador1': '',
-            'txtUsuarioGerador2': '',
+            'txtUsuarioGerador2': usuario_gerador2,
             'hdnIdUsuarioGerador2': '',
-            'txtUsuarioGerador3': '',
+            'txtUsuarioGerador3': usuario_gerador3,
             'hdnIdUsuarioGerador3': '',
-            'hdnInicio': '0'
-            }
+            'frmPesquisaProtocolo': 'submit',
+            'hdnInicio': '0',
+        }
 
-        if doc_gerados:
-            data['chkSinDocumentosGerados'] = 'S'
-        if doc_recebidos:
-            data['chkSinDocumentosRecebidos'] = 'S'
-        if com_tramitacao:
-            data['chkSinProcessosTramitacao'] = 'S'
+        data = {k: v for k, v in data.items() if v}
+        r = self.session.post(self.form_URL, data=data, allow_redirects=True)
 
+        soup = BeautifulSoup(r.content, 'lxml')
 
-        r = self.session.post(self.form_URL, data=data, allow_redirects=False)
-        processo_SEI = r.headers.get('Location', None)
-        if processo_SEI:
-            url_dados_processo = self.url + processo_SEI
+        processo = soup.find('iframe', {'id': 'ifrArvore'})
+        print(f'{processo = }')
+        if processo:
+            url_dados_processo = URL_SEI + processo['src']
             r = self.session.get(url_dados_processo)
             return ProcessoSei(self.session, r.text)
         else:
