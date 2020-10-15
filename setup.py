@@ -1,6 +1,7 @@
 import os
 import re
 from setuptools import setup
+from pipenv import find_install_requires
 
 
 def get_version(pkg_name, version_file='__version__.py'):
@@ -11,26 +12,21 @@ def get_version(pkg_name, version_file='__version__.py'):
     return version
 
 
-def get_dependencies():
-    with open('requirements.txt') as f:
-        dependencies = f.readlines()
-    return dependencies
-
-
 pkg_name = 'pysei'
 pkg_version = get_version(pkg_name)
 pkgs = ['pysei']
-install_requires = get_dependencies()
+install_requires = find_install_requires()
 
 config = dict(
     name=pkg_name,
     version=pkg_version,
     author='Rafael Alves Ribeiro',
     author_email='rafael.alves.ribeiro@gmail.com',
-    url='https://github.com/rafpyprog/pySEI.git',
+    url='https://github.com/renatodamas/pySEI.git',
     classifiers=[
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8.6',
     ],
     packages=pkgs,
     license='License :: OSI Approved :: MIT License',
