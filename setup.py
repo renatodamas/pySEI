@@ -1,7 +1,7 @@
 import os
 import re
 from setuptools import setup
-from pipenv import find_install_requires
+#from pipenv import find_install_requires
 
 
 def get_version(pkg_name, version_file='__version__.py'):
@@ -15,7 +15,7 @@ def get_version(pkg_name, version_file='__version__.py'):
 pkg_name = 'pysei'
 pkg_version = get_version(pkg_name)
 pkgs = ['pysei']
-install_requires = find_install_requires()
+install_requires = ['bs4', 'requests', 'lxml']  # find_install_requires()
 
 config = dict(
     name=pkg_name,
