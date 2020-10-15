@@ -9,10 +9,10 @@ install:
 - pip install -q pipenv codecov
 - pipenv sync --dev
 script:
-- flake8
-- python setup.py test
+- pipenv run flake8
+- pipenv run python setup.py test
 branches:
   only:
   - master
 after_success:
-- codecov
+- pipenv run codecov
