@@ -10,6 +10,7 @@ install:
 - pipenv sync --dev
 script:
 - pipenv run flake8
+- pipenv
 - pipenv run python setup.py test
 branches:
   only:
