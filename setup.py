@@ -1,7 +1,7 @@
 import os
 import re
 from setuptools import setup
-#from pipenv import find_install_requires
+# from pipenv import find_install_requires
 
 
 def get_version(pkg_name, version_file='__version__.py'):

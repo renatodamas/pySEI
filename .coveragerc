@@ -3,3 +3,5 @@ omit = pysei/__version__.py
        *eggs*
        setup.py
        tests/*
+       .venv/*
+       venv/*
