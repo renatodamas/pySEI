@@ -2,9 +2,10 @@ import os
 import re
 from bs4 import BeautifulSoup
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
+import warnings
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+urllib3.disable_warnings()
 
 URL_SEI = ''  # Especificada em SEI.__init__
 
@@ -67,9 +68,9 @@ class ProcessoSei:
     def acoes(self):
         if self._acoes is None:
             html = self.arvore
-            acoes = re.search('(?<=Nos\[0\].acoes = \').*', html).group()
+            acoes = re.search(r'(?<=Nos\[0\].acoes = \').*', html).group()
             self._acoes = [URL_SEI + i for
-                           i in re.findall('(?<=href=").*?(?="\stabindex)', acoes)]
+                           i in re.findall(r'(?<=href=").*?(?="\stabindex)', acoes)]
         return self._acoes
 
     @property
@@ -77,10 +78,10 @@ class ProcessoSei:
         if self._documentos == {}:
             html = self.arvore
 
-            pattern_urls = '(?<=Nos\[[0-999]\].src\s=\s\').*(?=\';)'
+            pattern_urls = r'(?<=Nos\[[0-999]\].src\s=\s\').*(?=\';)'
             urls_arvore = re.findall(pattern_urls, html)[1:]
 
-            pattern = '(?<=Nos\[[0-999]\] = new infraArvoreNo\().*(?=\))'
+            pattern = r'(?<=Nos\[[0-999]\] = new infraArvoreNo\().*(?=\))'
             nos_arvore = re.findall(pattern, html)[1:]
 
             for i in ['",'.join(i) for i in zip(nos_arvore, urls_arvore)]:
@@ -112,7 +113,7 @@ class ProcessoSei:
         for n, item in enumerate(params['hdnInfraItens'].split(',')):
             params['chkInfraItem{}'.format(n)] = item
         r = self.session.post(url_gera_pdf, verify=False, data=params, timeout=60)
-        url_pdf = re.search('(?<=window.open\(\').*(?=\'\))', r.text).group()
+        url_pdf = re.search(r'(?<=window.open\(\').*(?=\'\))', r.text).group()
         r = self.session.get(URL_SEI + url_pdf, verify=False, timeout=120)
         download_content = r.content
 
@@ -150,7 +151,7 @@ class Documento:
         r = self.session.head(self.url)
         filename = r.headers.get('Content-Disposition', None)
         if filename:
-            filename = re.search('(?<=filename=").*(?=")', filename).group()
+            filename = re.search(r'(?<=filename=").*(?=")', filename).group()
         return filename
 
     @property
@@ -218,7 +219,7 @@ class SEI():
             self.user = soup.find('a', {'id': 'lnkUsuarioSistema'})['title']
 
         except Exception:
-            print('Erro no login')
+            warnings.warn('Erro no login')
             return False
 
         self.html = r.content
@@ -298,7 +299,7 @@ class SEI():
         soup = BeautifulSoup(r.content, 'lxml')
 
         processo = soup.find('iframe', {'id': 'ifrArvore'})
-        print(f'{processo = }')
+        # print(f'{processo = }')
         if processo:
             url_dados_processo = URL_SEI + processo['src']
             r = self.session.get(url_dados_processo)
