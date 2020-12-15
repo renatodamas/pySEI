@@ -9,7 +9,7 @@ install:
 - pip install -q pipenv codecov
 - pipenv sync --dev
 script:
-- pipenv run flake8 --max-line-length=115 --ignore=W605,F401
+- pipenv run flake8 --max-line-length=120 --ignore=W605,F401
 - pipenv run pytest --cov=pysei
 branches:
   only:

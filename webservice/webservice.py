@@ -125,7 +125,8 @@ class SEIWebService(SEI):
         :param id_veiculo_publicacao: Identificador do veículo de publicação
         :param data_disponibilizacao: Data de disponibilização
         :param resumo: Texto do resumo da publicação
-        :param imprensa_nacional: Opcional, dados informativos da Imprensa Nacional (ver estrutura Publicacaoimprensa_nacional)
+        :param imprensa_nacional: Opcional, dados informativos da Imprensa Nacional
+                (ver estrutura Publicacaoimprensa_nacional)
         :return: Retorna o identificador interno da publicação
         """
         raise Exception('Método agendar_publicacao não implementado!')
@@ -157,7 +158,8 @@ class SEIWebService(SEI):
         :param id_veiculo_publicacao: Identificador do veículo de publicação
         :param data_disponibilizacao: Data de disponibilização
         :param resumo: Texto do resumo da publicação
-        :param imprensa_nacional: Opcional, dados informativos da Imprensa Nacional (ver estrutura Publicacaoimprensa_nacional)
+        :param imprensa_nacional: Opcional, dados informativos da Imprensa Nacional
+                (ver estrutura Publicacaoimprensa_nacional)
         :return: Retorna true
         """
         raise Exception('Método alterar_publicacao não implementado!')
@@ -367,7 +369,8 @@ class SEIWebService(SEI):
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
-        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
+        :param id_unidade: Identificador da unidade no SEI
+                (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
         :param id_bloco: Número do bloco
         :param sin_retornar_protocolos: S/N - sinalizador para retorno dos protocolos do bloco (valor padrão N)
         :return: Uma ocorrência da estrutura RetornoConsultaBloco
@@ -425,7 +428,8 @@ class SEIWebService(SEI):
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
-        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente)
+        :param id_unidade: Identificador da unidade no SEI
+                (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente)
         :param protocolo_procedimento: Número do processo visível para o usuário, ex: 12.1.000000077-4
         :param sin_retornar_assuntos: S/N - sinalizador para retorno dos assuntos do processo
         :param sin_retornar_interessados: S/N - sinalizador para retorno de interessados do processo
@@ -433,7 +437,8 @@ class SEIWebService(SEI):
         :param sin_retornar_andamento_geracao: S/N - sinalizador para retorno do andamento de geração
         :param sin_retornar_andamento_conclusao: S/N - sinalizador para retorno do andamento de conclusão
         :param sin_retornar_ultimo_andamento: S/N - sinalizador para retorno do último andamento
-        :param sin_retornar_unidades_procedimento_aberto: S/N - sinalizador para retorno das unidades onde o processo se encontra aberto
+        :param sin_retornar_unidades_procedimento_aberto: S/N - sinalizador para retorno das unidades
+                onde o processo se encontra aberto
         :param sin_retornar_procedimentos_relacionados: S/N - sinalizador para retorno dos processos relacionados
         :param sin_retornar_procedimentos_anexados: S/N - sinalizador para retorno dos processos anexados
         :return: Uma ocorrência da estrutura RetornoConsultaprocedimento
@@ -458,7 +463,8 @@ class SEIWebService(SEI):
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
-        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
+        :param id_unidade: Identificador da unidade no SEI
+                (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
         :param id_orgao_procedimento: Identificador do órgão do processo
         :param id_tipo_procedimento: Identificador do tipo do processo
         :param id_orgao_usuario: Identificador do órgão do usuário
@@ -485,7 +491,8 @@ class SEIWebService(SEI):
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
-        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
+        :param id_unidade: Identificador da unidade no SEI
+                (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente).
         :param id_publicacao: Identificador da publicação
         :param id_documento: Identificador do documento
         :param protocolo_documento: Número do documento visível para o usuário, ex.: 0003934
@@ -626,11 +633,15 @@ class SEIWebService(SEI):
         :param unidades_destino: Conjunto de unidades destinatárias (ver estrutura Unidade)
         :param sin_manter_aberto_unidade: S/N - sinalizador indica se o processo deve ser mantido aberto na unidade
         :param sin_remover_anotacao: S/N - sinalizador indicando se deve ser removida anotação do processo
-        :param sin_enviar_email_notificacao: S/N - sinalizador indicando se deve ser enviado email de aviso para as unidades destinatárias (valor padrão N)
+        :param sin_enviar_email_notificacao: S/N - sinalizador indicando se deve ser enviado email de aviso
+                para as unidades destinatárias (valor padrão N)
         :param data_retorno_programado: Data para definição de Retorno Programado (valor padrão nulo)
         :param dias_retorno_programado: Número de dias para o Retorno Programado (valor padrão nulo)
-        :param sin_dias_uteis_retorno_programado: S/N - sinalizador indica se o valor passado no parâmetro dias_retorno_programado corresponde a dias úteis ou não (valor padrão N)
-        :param sin_reabrir: S/N - sinalizador indicando se o processo deve ser reaberto automaticamente caso esteja concluído na unidade. para realizar a reabertura o serviço deverá ter também a operação "Reabrir Processo" liberada no SEI.
+        :param sin_dias_uteis_retorno_programado: S/N - sinalizador indica se o valor passado no parâmetro
+                dias_retorno_programado corresponde a dias úteis ou não (valor padrão N)
+        :param sin_reabrir: S/N - sinalizador indicando se o processo deve ser reaberto automaticamente caso esteja
+                concluído na unidade. para realizar a reabertura o serviço deverá ter também a operação
+                "Reabrir Processo" liberada no SEI.
         :return: Retorna true
         """
         raise Exception('Método enviar_processo não implementado!')
@@ -708,9 +719,13 @@ class SEIWebService(SEI):
         :param id_unidade: Id da unidade onde será gerado o bloco
         :param tipo: tipo do bloco: A – Assinatura, R – Reunião, I - Interno
         :param descricao: descrição do bloco
-        :param unidades_disponibilizacao: Conjunto de unidades para disponibilização (ver estrutura Unidade). Passar um conjunto vazio caso o bloco não deva ser disponibilizado.
-        :param documentos: Lista de protocolos de documentos (número visível para o usuário, ex.: 0003934). para realizar a inclusão o serviço deverá ter também a operação "Incluir documento em Bloco" liberada no SEI.
-        :param sin_disponibilizar: S/N - sinalizador indicando se o bloco deve ser automaticamente disponibilizado. para realizar a disponibilização o serviço deverá ter também a operação "Disponibilizar Bloco" liberada no SEI.
+        :param unidades_disponibilizacao: Conjunto de unidades para disponibilização (ver estrutura Unidade).
+                Passar um conjunto vazio caso o bloco não deva ser disponibilizado.
+        :param documentos: Lista de protocolos de documentos (número visível para o usuário, ex.: 0003934). Para
+                realizar a inclusão o serviço deverá ter também a operação "Incluir documento em Bloco" liberada no SEI.
+        :param sin_disponibilizar: S/N - sinalizador indicando se o bloco deve ser automaticamente disponibilizado.
+                Para realizar a disponibilização o serviço deverá ter também a operação "Disponibilizar Bloco"
+                liberada no SEI.
         :return: Retorna o número do bloco gerado.
         """
         raise Exception('Método gerar_bloco não implementado!')
@@ -739,14 +754,21 @@ class SEIWebService(SEI):
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
         :param id_unidade: Valor informado no cadastro do serviço realizado no SEI
         :param procedimento: Informar os dados do processo (ver estrutura procedimento)
-        :param documentos: Informar os documentos que devem ser gerados em conjunto com o processo (ver estrutura documento). Se nenhum documento for gerado informar um conjunto vazio. O número máximo de documentos por chamada é limitado através do parâmetro SEI_WS_NUM_MAX_DOCS (menu Infra/Parâmetros).
-        :param procedimentos_relacionados: Conjunto com Ids de processos que devem ser relacionados automaticamente com o novo processo
-        :param unidades_envio: Conjunto com Ids de unidades para envio do processo após a geração. O processo ficará aberto na unidade geradora e nas unidades informadas neste parâmetro.
-        :param sin_manter_aberto_unidade: S/N - sinalizador indica se o processo deve ser mantido aberto na unidade de origem (valor padrão S)
-        :param sin_enviar_email_notificacao: S/N - sinalizador indicando se deve ser enviado email de aviso para as unidades destinatárias (valor padrão N)
+        :param documentos: Informar os documentos que devem ser gerados em conjunto com o processo
+                (ver estrutura documento). Se nenhum documento for gerado informar um conjunto vazio. O número máximo
+                de documentos por chamada é limitado através do parâmetro SEI_WS_NUM_MAX_DOCS (menu Infra/Parâmetros).
+        :param procedimentos_relacionados: Conjunto com Ids de processos que devem ser relacionados automaticamente
+                com o novo processo
+        :param unidades_envio: Conjunto com Ids de unidades para envio do processo após a geração. O processo ficará
+                aberto na unidade geradora e nas unidades informadas neste parâmetro.
+        :param sin_manter_aberto_unidade: S/N - sinalizador indica se o processo deve ser mantido aberto na unidade de
+                origem (valor padrão S)
+        :param sin_enviar_email_notificacao: S/N - sinalizador indicando se deve ser enviado email de aviso para as
+                unidades destinatárias (valor padrão N)
         :param data_retorno_programado: Data para definição de Retorno Programado (valor padrão nulo)
         :param dias_retorno_programado: Número de dias para o Retorno Programado (valor padrão nulo)
-        :param sin_dias_uteis_retorno_programado: S/N - sinalizador indica se o valor passado no parâmetro dias_retorno_programado corresponde a dias úteis ou não (valor padrão N)
+        :param sin_dias_uteis_retorno_programado: S/N - sinalizador indica se o valor passado no parâmetro
+                dias_retorno_programado corresponde a dias úteis ou não (valor padrão N)
         :param id_marcador: Opcional. Identificador de um marcador da unidade para associação
         :param texto_marcador: Opcional. Texto do marcador
         :return: Uma ocorrência da estrutura RetornoGeracaoprocedimento
@@ -765,7 +787,8 @@ class SEIWebService(SEI):
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
-        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela auxiliar do sistema cliente)
+        :param id_unidade: Identificador da unidade no SEI (sugere-se que este id seja armazenado em uma tabela
+                auxiliar do sistema cliente)
         :param documento: Informar os dados do documento (ver estrutura documento)
         :return: Uma ocorrência da estrutura RetornoInclusaodocumento
         """
@@ -855,8 +878,8 @@ class SEIWebService(SEI):
     ) -> object:
         """
         É necessário informar pelo menos um dos parâmetros andamentos, tarefas ou tarefasModulos. No parâmetro
-        tarefas é possível filtrar por qualquer tarefa do sistema (verificar os valores de tarefas internas nas constantes
-        existentes no arquivo TarefaRN.php).
+        tarefas é possível filtrar por qualquer tarefa do sistema (verificar os valores de tarefas internas nas
+        constantes existentes no arquivo TarefaRN.php).
 
         :param sigla_sistema: Valor informado no cadastro do sistema realizado no SEI
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
@@ -885,7 +908,8 @@ class SEIWebService(SEI):
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
         :param id_unidade: Valor informado no cadastro do serviço realizado no SEI
         :param protocolo_procedimento: Número do processo visível para o usuário, ex: 12.1.000000077-4
-        :param marcadores: Opcional. Filtra andamentos pelos identificadores informados. para retornar também os andamentos onde o marcador foi removido adicionar na lista o valor nulo.
+        :param marcadores: Opcional. Filtra andamentos pelos identificadores informados. para retornar também os
+                andamentos onde o marcador foi removido adicionar na lista o valor nulo.
         :return: Um conjunto de ocorrências da estrutura AndamentoMarcador.
         """
         raise Exception('Método listar_andamentosmarcadores não implementado!')
@@ -950,7 +974,8 @@ class SEIWebService(SEI):
         :param identificacao_servico: Valor informado no cadastro do serviço realizado no SEI
         :param id_unidade: Valor informado no cadastro do serviço realizado no SEI
         :param id_tipo_contato: Opcional. Filtra o tipo de contato
-        :param pagina_registros: Opcional. Informa o número máximo de registros que devem ser retornados por página de consulta (1 a 1000 com valor padrão 1).
+        :param pagina_registros: Opcional. Informa o número máximo de registros que devem ser retornados por página de
+                consulta (1 a 1000 com valor padrão 1).
         :param pagina_atual: Opcional. Informa o número da página atual (valor padrão 1).
         :param sigla: Opcional. Filtra contato pela sigla.
         :param nome: Opcional. Filtra contato pelo nome.
