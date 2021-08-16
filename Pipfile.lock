@@ -185,11 +185,10 @@
         },
         "zeep": {
             "hashes": [
-                "sha256:12945da854ff10376d384d21a132b66e318784ef05c696ae300a130746f4baa8",
-                "sha256:98158e43db33739d41502a1a7e3629dcb62dfd0864ea28c9d43f560a091cfe3f"
+                "sha256:5867f2eadd6b028d9751f4155af590d3aaf9280e3a0ed5e15a53343921c956e5",
+                "sha256:81c491092b71f5b276de8c63dfd452be3f322622c48a54f3a497cf913bdfb2f4"
             ],
-            "index": "pypi",
-            "version": "==4.0.0"
+            "version": "==4.1.0"
         }
     },
     "develop": {
