@@ -5,6 +5,7 @@ import requests
 import urllib3
 import warnings
 
+
 urllib3.disable_warnings()
 
 URL_SEI = ''  # Especificada em SEI.__init__
@@ -68,7 +69,7 @@ class ProcessoSei:
     def acoes(self):
         if self._acoes is None:
             html = self.arvore
-            acoes = re.search(r'(?<=Nos\[0\].acoes = \').*', html).group()
+            acoes = re.search(r"(?<=Nos\[0\].acoes = ').*", html).group()
             self._acoes = [URL_SEI + i for
                            i in re.findall(r'(?<=href=").*?(?="\stabindex)', acoes)]
         return self._acoes
@@ -200,7 +201,7 @@ class SEI():
         # 2 - Captura o hndToken'
         # r = self.session.get(url_login_php)
         soup = BeautifulSoup(r.text, 'lxml')
-        hdn_token = soup.find('input', {'id': re.compile('hdnToken')})
+        self.hdn_token = soup.find('input', {'id': re.compile('hdnToken')})
 
         # 3 - Envia o form de Login'
         data = {
@@ -209,7 +210,7 @@ class SEI():
             'selOrgao': id_orgao,
             'selInfraUnidades': id_unidade,  # quando o usuário está habilitado para mais de uma unidade
             'sbmLogin': 'Acessar',
-            hdn_token['name']: hdn_token['value']
+            self.hdn_token['name']: self.hdn_token['value']
         }
 
         r = self.session.post(url_login_php, data=data, verify=False)
@@ -218,22 +219,27 @@ class SEI():
             soup = BeautifulSoup(r.content, 'lxml')
             self.user = soup.find('a', {'id': 'lnkUsuarioSistema'})['title']
 
-        except Exception:
+        except TypeError:
             warnings.warn('Erro no login')
             return False
 
         self.html = r.content
         return True
 
+    def trocar_unidade(self, id_unidade: int):
+        r = self.session.post(URL_SEI, data={'selInfraUnidades': id_unidade}, allow_redirects=True)
+        return 200 <= r.status_code < 400
+
     @property
     def is_online(self):
         r = requests.get(URL_SEI, verify=False, allow_redirects=False)
-        return r.status_code in [200, 302]
+        return 200 <= r.status_code < 400
 
     def acessa_tela_pesquisa(self):
         soup = BeautifulSoup(self.html, 'lxml')
         menu = soup.find('ul', {'id': 'main-menu'}).find_all('a', text='Pesquisa')[0]
         url_pesquisa = URL_SEI + menu['href']
+        print(url_pesquisa)
         r = self.session.get(url_pesquisa, verify=False)
         return r.text
 
@@ -256,7 +262,7 @@ class SEI():
                  data_inicial='', data_final='', usuario_gerador1='', usuario_gerador2='', usuario_gerador3=''):
 
         data = {
-            'hdnInfraTipoPagina': '0',
+            'hdnInfraTipoPagina': '1',
             'sbmPesquisar': 'Pesquisar',
             'rdoPesquisarEm': 'D' if pesquisar_documentos else 'P',
             'chkSinDocumentosGerados': 'S' if doc_gerados else '',
@@ -293,16 +299,32 @@ class SEI():
             'hdnInicio': '0',
         }
 
+        if data['rdoPesquisarEm'] == 'P':
+            del data['chkSinDocumentosGerados']
+            del data['chkSinDocumentosRecebidos']
+            del data['selSeriePesquisa']
+            del data['chkSinRemetente']
+            del data['chkSinDestinatario']
+            del data['frmPesquisaProtocolo']
+            data['chkSinInteressado'] = 'S'
+
+        if numero_sei == '00058.021932/2020-82':
+            print(data)
+
         data = {k: v for k, v in data.items() if v}
         r = self.session.post(self.form_URL, data=data, allow_redirects=True)
 
         soup = BeautifulSoup(r.content, 'lxml')
 
-        processo = soup.find('iframe', {'id': 'ifrArvore'})
-        # print(f'{processo = }')
-        if processo:
-            url_dados_processo = URL_SEI + processo['src']
-            r = self.session.get(url_dados_processo)
+        print(f'{data["rdoPesquisarEm"]= }')
+        page_title = soup.find('title').text
+        print(f'{page_title= }', type(page_title))
+        print(r.url)
+
+        if page_title == 'SEI - Processo':
             return ProcessoSei(self.session, r.text)
-        else:
+        elif page_title == 'SEI - Resultado da Pesquisa':
             return ResultadoPesquisa(self.session, r.text)
+        else:
+            raise Exception("SEI.pesquisa apresentou resultado inesperado")
+
