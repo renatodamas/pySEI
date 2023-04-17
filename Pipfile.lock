@@ -189,11 +189,8 @@
             "version": "==1.16.0"
         },
         "soupsieve": {
-            "hashes": [
-                "sha256:617ffc4d0dfd39c66f4d1413a6e165663a34eca86be9b54f97b91756300ff6df",
-                "sha256:e4860f889dfa88774c07da0b276b70c073b6470fa1a4a8350800bb7bce3dcc76"
-            ],
-            "version": "==2.3"
+            "hashes": [],
+            "version": "==2.4.1"
         },
         "urllib3": {
             "hashes": [
