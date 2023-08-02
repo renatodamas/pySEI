@@ -82,11 +82,8 @@
             "version": "==3.3"
         },
         "isodate": {
-            "hashes": [
-                "sha256:2e364a3d5759479cdb2d37cce6b9376ea504db2ff90252a2e5b7cc89cc9ff2d8",
-                "sha256:aa4d33c06640f5352aca96e4b81afd8ab3b47337cc12089822d6f322ac772c81"
-            ],
-            "version": "==0.6.0"
+            "hashes": [],
+            "version": "==0.6.1"
         },
         "lxml": {
             "hashes": [
