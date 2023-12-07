@@ -39,7 +39,6 @@
             "version": "==1.5.2"
         },
         "certifi": {
-
             "hashes": [],
             "version": "==2023.11.17"
         },
@@ -47,7 +46,6 @@
             "hashes": [
                 "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa",
                 "sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5"
-
             ],
             "markers": "python_full_version >= '3.6.0'",
             "version": "==2022.5.18.1"
@@ -63,7 +61,6 @@
         "idna": {
             "hashes": [],
             "version": "==3.6"
-
         },
         "isodate": {
             "hashes": [
@@ -140,17 +137,12 @@
             "version": "==4.8.0"
         },
         "platformdirs": {
-            "hashes": [
-                "sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788",
-                "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"
-            ],
-            "markers": "python_version >= '3.7'",
-            "version": "==2.5.2"
+            "hashes": [],
+            "version": "==4.1.0"
         },
         "pytz": {
             "hashes": [],
             "version": "==2023.3.post1"
-
         },
         "requests": {
             "hashes": [
@@ -180,7 +172,6 @@
             "version": "==1.16.0"
         },
         "soupsieve": {
-
             "hashes": [],
             "version": "==2.5"
         },
@@ -191,7 +182,6 @@
         "zeep": {
             "hashes": [],
             "version": "==4.2.1"
-
         }
     },
     "develop": {
@@ -200,7 +190,6 @@
             "version": "==1.4.1"
         },
         "attrs": {
-
             "hashes": [],
             "version": "==23.1.0"
         },
@@ -209,14 +198,12 @@
             "version": "==0.4.6"
         },
         "coverage": {
-
             "hashes": [],
             "version": "==7.3.2"
         },
         "flake8": {
             "hashes": [],
             "version": "==6.1.0"
-
         },
         "iniconfig": {
             "hashes": [],
@@ -227,14 +214,12 @@
             "version": "==0.7.0"
         },
         "packaging": {
-
             "hashes": [],
             "version": "==23.2"
         },
         "pluggy": {
             "hashes": [],
             "version": "==1.3.0"
-
         },
         "py": {
             "hashes": [
@@ -245,7 +230,6 @@
             "version": "==1.11.0"
         },
         "pycodestyle": {
-
             "hashes": [],
             "version": "==2.11.1"
         },
