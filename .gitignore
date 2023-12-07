@@ -10,3 +10,4 @@ __pycache__
 /estatistica
 *.ipynb
 *.zip
+.idea

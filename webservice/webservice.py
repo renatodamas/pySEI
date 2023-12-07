@@ -3,13 +3,20 @@ from zeep import Client
 from zeep.wsse.username import UsernameToken
 from zeep.transports import Transport
 
+from requests import Session
+from requests.auth import HTTPBasicAuth  # or HTTPDigestAuth, or OAuth1, etc.
+from zeep import Client
+from zeep.transports import Transport
+from zeep.plugins import HistoryPlugin
+
+SIGLA_SISTEMA = None
+IDENTIFICACAO_SISTEMA = None
 
 class LoginErro(Exception):
     pass
 
 
 class SEIWebService(SEI):
-
     def __init__(
             self,
             wsdl: str
@@ -36,17 +43,37 @@ class SEIWebService(SEI):
         :param id_unidade:
         :return:
         """
+        if super().login(username, password, id_orgao, id_unidade):
+            self.id_orgao = id_orgao
+            self.id_unidade = id_unidade
+            self.session.auth = HTTPBasicAuth(username=username, password=password)
+            self.session.auth.__dict__[self.hdn_token['name']] = self.hdn_token['value']
+            print(self.session.auth.__dict__)
+            transport = Transport(session=self.session)
+            self._soapheaders = {
+                "credentialsHeader": {
+                    "Username": username,
+                    "Password": password,
+                    self.hdn_token['name']: self.hdn_token['value']
+                }
 
-        self.id_orgao = id_orgao
-        self.id_unidade = id_unidade
-        user_token = UsernameToken(username, password)
-        transport = Transport(session=self.session)
-        try:
-            self.client = Client(wsdl=self.wsdl, wsse=user_token, transport=transport)
-        except Exception:
-            raise LoginErro('Erro no login')
-        else:
-            return True
+            }
+            self.client = Client(wsdl=self.wsdl,
+                                 transport=transport,
+                                 # wsse=UsernameToken(username=username, password=password)
+                                 # _soapheaders=self._soapheaders
+                                 )
+
+            # print(self.client.wsdl.dump())
+            self.is_connected = True
+
+        return self.is_connected
+
+    def especificar_sistema(self, sigla_sistema: str, identificacao_servico: str) -> None:
+        global SIGLA_SISTEMA
+        global IDENTIFICACAO_SISTEMA
+        SIGLA_SISTEMA = sigla_sistema
+        IDENTIFICACAO_SISTEMA = identificacao_servico
 
     def adicionar_arquivo(
             self,
@@ -383,10 +410,10 @@ class SEIWebService(SEI):
             identificacao_servico: str,
             id_unidade: str,
             protocolo_documento: str,
-            sin_retornar_andamento_geracao: str,
-            sin_retornar_assinaturas: str,
-            sin_retornar_publicacao: str,
-            sin_retornar_campos: str
+            sin_retornar_andamento_geracao: str='S',
+            sin_retornar_assinaturas: str='S',
+            sin_retornar_publicacao: str='S',
+            sin_retornar_campos: str='S'
     ) -> object:
         """
         documento de processos sigilosos não são retornados. Cada um dos sinalizadores implica em processamento
@@ -403,7 +430,22 @@ class SEIWebService(SEI):
         :param sin_retornar_campos: S/N - sinalizador para retorno dos campos do formulário
         :return: Uma ocorrência da estrutura RetornoConsultadocumento
         """
-        raise Exception('Método consultar_documento não implementado!')
+
+        request_data = {
+            'SiglaSistema': sigla_sistema,
+            'IdentificacaoServico': identificacao_servico,
+            'IdUnidade': id_unidade,
+            'ProtocoloDocumento': protocolo_documento,
+            'SinRetornarAndamentoGeracao': sin_retornar_andamento_geracao,
+            'SinRetornarAssinaturas': sin_retornar_assinaturas,
+            'SinRetornarPublicacao': sin_retornar_publicacao,
+            'SinRetornarCampos': sin_retornar_campos
+        }
+
+        if self.client:
+            return self.client.service.consultarDocumento(**request_data)
+        else:
+            print('Cliente WebService não foi inicializado.')
 
     def consultar_procedimento(
             self,
@@ -792,7 +834,17 @@ class SEIWebService(SEI):
         :param documento: Informar os dados do documento (ver estrutura documento)
         :return: Uma ocorrência da estrutura RetornoInclusaodocumento
         """
-        raise Exception('Método incluir_documento não implementado!')
+        request_data = {
+            'SiglaSistema': sigla_sistema,
+            'IdentificacaoServico': identificacao_servico,
+            'IdUnidade': id_unidade,
+            'Documento': documento,
+        }
+
+        if self.client:
+            return self.client.service.incluirDocumento(**request_data)
+        else:
+            print('Cliente WebService não foi inicializado.')
 
     def incluir_documento_bloco(
             self,
@@ -1182,8 +1234,8 @@ class SEIWebService(SEI):
             self,
             sigla_sistema: str,
             identificacao_servico: str,
-            id_unidade: str,
-            id_usuario: str
+            id_unidade: str = None,
+            id_usuario: str = ""
     ) -> object:
         """
         Retorna o conjunto de usuários que possuem o perfil "Básico" do SEI na unidade.
@@ -1194,7 +1246,18 @@ class SEIWebService(SEI):
         :param id_usuario: Opcional. Filtra determinado usuário.
         :return: Um conjunto de ocorrências da estrutura Usuario.
         """
-        raise Exception('Método listar_usuarios não implementado!')
+        if not id_unidade:
+            id_unidade = self.id_unidade
+
+        request_data = {
+            'SiglaSistema': sigla_sistema,
+            'IdentificacaoServico': identificacao_servico,
+            'IdUnidade': id_unidade,
+            'IdUsuario': id_usuario
+        }
+        return self.client.service.listarUsuarios(**request_data)
+        # raise Exception('Método listar_usuarios não implementado!')
+
 
     def reabrir_processo(
             self,

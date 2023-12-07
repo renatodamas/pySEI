@@ -17,6 +17,7 @@ def sei():
 
 def test_login_sei(sei):
     login_status = sei.login(SEI_USERNAME, SEI_PASSWORD)
+    sei.trocar_unidade(110000046)
     assert login_status
 
 
@@ -47,6 +48,7 @@ def test_retorna_resultado_pesquisa(sei):
 def test_retorna_processo_sei(sei):
     sei.login(SEI_USERNAME, SEI_PASSWORD, id_unidade=SEI_UNIDADE)
     p = sei.pesquisa(numero_sei=SEI_PROCESSO_TESTE, pesquisar_documentos=False)
+    print(f'{SEI_PROCESSO_TESTE= }, {type(SEI_PROCESSO_TESTE)}')
     assert isinstance(p, ProcessoSei)
 
 
