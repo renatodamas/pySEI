@@ -17,15 +17,11 @@
     },
     "default": {
         "attrs": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==23.1.0"
         },
         "beautifulsoup4": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==4.12.2"
         },
         "bs4": {
@@ -59,7 +55,6 @@
             "version": "==2022.5.18.1"
         },
         "charset-normalizer": {
-
             "hashes": [
                 "sha256:06435b539f889b1f6f4ac1758871aae42dc3a8c0e24ac9e60c2384973ad73027",
                 "sha256:06a81e93cd441c56a9b65d8e1d043daeb97a3d0856d177d5c90ba85acb3db087",
@@ -153,7 +148,6 @@
                 "sha256:ff8fa367d09b717b2a17a052544193ad76cd49979c805768879cb63d9ca50561"
             ],
             "markers": "python_full_version >= '3.7.0'",
-
             "version": "==3.3.2"
         },
         "idna": {
@@ -200,9 +194,7 @@
             "version": "==1.5.1"
         },
         "requests-toolbelt": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==1.0.0"
         },
         "six": {
@@ -232,9 +224,7 @@
     },
     "develop": {
         "atomicwrites": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==1.4.1"
         },
         "attrs": {
@@ -242,29 +232,23 @@
             "version": "==23.1.0"
         },
         "colorama": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==0.4.6"
         },
         "coverage": {
             "hashes": [],
-            "version": "==7.3.2"
+            "version": "==7.4.1"
         },
         "flake8": {
             "hashes": [],
             "version": "==6.1.0"
         },
         "iniconfig": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==2.0.0"
         },
         "mccabe": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==0.7.0"
         },
         "packaging": {
@@ -288,33 +272,23 @@
             "version": "==2.11.1"
         },
         "pyflakes": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==3.1.0"
         },
         "pyparsing": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==3.1.1"
         },
         "pytest": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==7.4.3"
         },
         "pytest-cov": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==4.1.0"
         },
         "pytest-mock": {
-            "hashes": [
-
-            ],
+            "hashes": [],
             "version": "==3.12.0"
         },
         "tomli": {
