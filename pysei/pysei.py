@@ -197,11 +197,11 @@ class SEI():
         # 1 - Página inicial
         r = self.session.get(URL_SEI, verify=False, allow_redirects=True)
         url_login_php = r.url
+        soup = BeautifulSoup(r.text, 'lxml')
 
         # 2 - Captura o hndToken'
         # r = self.session.get(url_login_php)
-        soup = BeautifulSoup(r.text, 'lxml')
-        self.hdn_token = soup.find('input', {'id': re.compile('hdnToken')})
+        # self.hdn_token = soup.find('input', {'id': re.compile('hdnToken')})
 
         # 3 - Envia o form de Login'
         data = {
@@ -209,8 +209,9 @@ class SEI():
             'pwdSenha': self.password,
             'selOrgao': id_orgao,
             'selInfraUnidades': id_unidade,  # quando o usuário está habilitado para mais de uma unidade
-            'sbmLogin': 'Acessar',
-            self.hdn_token['name']: self.hdn_token['value']
+            'Acessar': '',
+            'hdnAcao': 2,
+            # self.hdn_token['name']: self.hdn_token['value']
         }
 
         r = self.session.post(url_login_php, data=data, verify=False)
@@ -224,6 +225,8 @@ class SEI():
             return False
 
         self.html = r.content
+        with open('after_login.html', 'wb') as f:
+            f.write(self.html)
         return True
 
     def trocar_unidade(self, id_unidade: int):
@@ -237,7 +240,7 @@ class SEI():
 
     def acessa_tela_pesquisa(self):
         soup = BeautifulSoup(self.html, 'lxml')
-        menu = soup.find('ul', {'id': 'main-menu'}).find_all('a', text='Pesquisa')[0]
+        menu = soup.find('a', {'link':"protocolo_pesquisar"})
         url_pesquisa = URL_SEI + menu['href']
         print(url_pesquisa)
         r = self.session.get(url_pesquisa, verify=False)
