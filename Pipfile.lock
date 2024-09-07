@@ -309,12 +309,8 @@
             "version": "==5.2.2"
         },
         "platformdirs": {
-            "hashes": [
-                "sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
-                "sha256:38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3"
-            ],
-            "markers": "python_version >= '3.8'",
-            "version": "==4.2.2"
+            "hashes": [],
+            "version": "==4.3.1"
         },
         "pytz": {
             "hashes": [
